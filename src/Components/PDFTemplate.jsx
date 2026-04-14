@@ -6,10 +6,12 @@ const PDFTemplate = forwardRef(({ form, items, total }, ref) => {
   const quotationNumber = `QT-${new Date().getFullYear()}-${Math.floor(Math.random() * 10000).toString().padStart(5, "0")}`;
   
   return (
-    <div ref={ref} style={{ padding: "30px", background: "#fff", maxWidth: "850px", margin: "0 auto", fontSize: "13px", position: "relative", overflow: "hidden", fontFamily: "Arial, sans-serif" }}>
-      {/* Background Watermark Icon */}
-      <div style={{ position: "absolute", top: "50%", left: "50%", transform: "translateX(-50%) translateY(-50%) rotate(-20deg)", opacity: 0.06, zIndex: 0, pointerEvents: "none" }}>
-        <img src={shreeIcon} alt="watermark" style={{ width: "500px", height: "500px", objectFit: "contain" }} />
+    <div ref={ref} style={{ padding: "30px", background: "#fff", maxWidth: "850px", margin: "0 auto", fontSize: "13px", position: "relative", overflow: "hidden", fontFamily: "Arial, sans-serif", minHeight: "100%" }}>
+      {/* Background Watermark Icon - Full Page Coverage */}
+      <div style={{ position: "absolute", top: "0", left: "0", right: "0", bottom: "0", display: "flex", alignItems: "center", justifyContent: "center", opacity: 0.17, zIndex: 0, pointerEvents: "none", width: "100%", height: "100%" }}>
+        <div style={{ transform: "rotate(-15deg) scale(1.1)" }}>
+          <img src={shreeIcon} alt="watermark" style={{ width: "650px", height: "650px", objectFit: "contain", filter: "brightness(0.9) contrast(1.15) drop-shadow(0 0 50px rgba(102, 126, 234, 0.45))" }} />
+        </div>
       </div>
 
       {/* Content Wrapper */}
@@ -70,17 +72,17 @@ const PDFTemplate = forwardRef(({ form, items, total }, ref) => {
           </div>
         </div>
 
-        {/* Items Table */}
+        {/* Services Table */}
         <div style={{ marginBottom: "15px" }}>
           <h3 style={{ margin: "0 0 10px 0", fontSize: "14px", fontWeight: "bold", color: "#333", borderBottom: "2px solid #667eea", paddingBottom: "5px" }}>
-            📦 ITEMS DETAILS
+            🎨 PAINTING SERVICES & MATERIALS
           </h3>
           <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "12px" }}>
             <thead>
               <tr style={{ background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)", color: "white" }}>
                 <th style={{ padding: "10px", textAlign: "center", fontWeight: "bold", border: "1px solid #ddd" }}>Sr</th>
-                <th style={{ padding: "10px", textAlign: "left", fontWeight: "bold", border: "1px solid #ddd" }}>Description</th>
-                <th style={{ padding: "10px", textAlign: "center", fontWeight: "bold", border: "1px solid #ddd" }}>Qty</th>
+                <th style={{ padding: "10px", textAlign: "left", fontWeight: "bold", border: "1px solid #ddd" }}>Service/Material</th>
+                <th style={{ padding: "10px", textAlign: "center", fontWeight: "bold", border: "1px solid #ddd" }}>Unit/Qty</th>
                 <th style={{ padding: "10px", textAlign: "right", fontWeight: "bold", border: "1px solid #ddd" }}>Rate (₹)</th>
                 <th style={{ padding: "10px", textAlign: "right", fontWeight: "bold", border: "1px solid #ddd" }}>Amount (₹)</th>
               </tr>
