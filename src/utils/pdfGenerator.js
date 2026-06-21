@@ -3,31 +3,28 @@ import html2canvas from "html2canvas";
 
 export const generatePDF = async (element) => {
   try {
-    // Enhanced html2canvas settings for mobile compatibility
+    const scale = Math.max(3, window.devicePixelRatio || 1);
     const canvas = await html2canvas(element, {
-      scale: 2,
-      allowTaint: true,
+      scale,
       useCORS: true,
       backgroundColor: "#ffffff",
       logging: false,
-      windowHeight: element.scrollHeight || element.clientHeight,
-      windowWidth: element.scrollWidth || element.clientWidth,
-      removeContainer: true
+      scrollX: -window.scrollX,
+      scrollY: -window.scrollY,
+      width: element.scrollWidth,
+      height: element.scrollHeight,
+      windowWidth: document.documentElement.clientWidth,
+      windowHeight: document.documentElement.clientHeight,
     });
     
-    // A4 page dimensions
     const pageWidth = 210; // mm
     const pageHeight = 297; // mm
     const margin = 5; // mm
     
-    // Calculate image dimensions
-    const availableWidth = pageWidth - (2 * margin);
-    const imgWidth = availableWidth;
-    const imgHeight = (canvas.height * imgWidth) / canvas.width;
-    
-    // Create PDF with proper page count
-    const pdf = new jsPDF("p", "mm", "a4");
-    const totalPages = Math.ceil(imgHeight / (pageHeight - 2 * margin));
+    const pdf = new jsPDF({ unit: "mm", format: "a4", compress: true });
+    const pdfWidth = pageWidth - margin * 2;
+    const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+    const totalPages = Math.ceil(pdfHeight / (pageHeight - margin * 2));
     
     for (let page = 0; page < totalPages; page++) {
       if (page > 0) {
@@ -47,9 +44,9 @@ export const generatePDF = async (element) => {
       ctx.drawImage(canvas, 0, sourceY, canvas.width, sourceHeight, 0, 0, canvas.width, sourceHeight);
       
       const pageImgData = pageCanvas.toDataURL("image/png");
-      const pageImgHeight = (sourceHeight * imgWidth) / canvas.width;
+      const pageImgHeight = (sourceHeight * pdfWidth) / canvas.width;
       
-      pdf.addImage(pageImgData, "PNG", margin, margin, imgWidth, pageImgHeight);
+      pdf.addImage(pageImgData, "PNG", margin, margin, pdfWidth, pageImgHeight, undefined, "FAST");
     }
     
     pdf.save("quotation.pdf");
