@@ -32,67 +32,80 @@ const PDFTemplate = forwardRef(
 
     return (
     <div ref={ref} style={{ padding: "30px", background: "#fff", maxWidth: "850px", margin: "0 auto", fontSize: "13px", position: "relative", overflow: "hidden", fontFamily: "Arial, sans-serif", minHeight: "100%" }}>
-      {/* Background Watermark Icon - Full Page Coverage */}
-      <div style={{ position: "absolute", top: "0", left: "0", right: "0", bottom: "0", display: "flex", alignItems: "center", justifyContent: "center", opacity: 0.17, zIndex: 0, pointerEvents: "none", width: "100%", height: "100%" }}>
-        <div style={{ transform: "rotate(-15deg) scale(1.1)" }}>
-          <img src={shreeIcon} alt="watermark" style={{ width: "650px", height: "650px", objectFit: "contain", filter: "brightness(0.9) contrast(1.15) drop-shadow(0 0 50px rgba(102, 126, 234, 0.45))" }} />
+      {/* Background Watermark Icons - Full Page Coverage */}
+      <div style={{ position: "absolute", inset: 0, opacity: 0.10, zIndex: 0, pointerEvents: "none" }}>
+        <div style={{ position: "absolute", top: "12%", left: "50%", transform: "translateX(-50%) rotate(-15deg)", width: "820px", maxWidth: "90%" }}>
+          <img src={shreeIcon} alt="watermark" style={{ width: "100%", height: "auto", objectFit: "contain", filter: "brightness(0.92) contrast(1.1) drop-shadow(0 0 30px rgba(102, 126, 234, 0.18))" }} />
+          </div>
+          <div style={{ position: "absolute", bottom: "10%", left: "45%", transform: "translateX(-50%) rotate(-15deg)", width: "680px", maxWidth: "75%" }}>
+          <img src={shreeIcon} alt="watermark" style={{ width: "80%", height: "auto", objectFit: "contain", filter: "brightness(0.92) contrast(1.1) drop-shadow(0 0 30px rgba(102, 126, 234, 0.18))" }} />
         </div>
       </div>
 
       {/* Content Wrapper */}
       <div style={{ position: "relative", zIndex: 1 }}>
-        {/* Header with Icon and Company Name */}
-        <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "12px", paddingBottom: "10px", borderBottom: "2px solid #667eea" }}>
-          <img src={shreeIcon} alt="logo" style={{ width: "55px", height: "55px", objectFit: "contain" }} />
-          <div>
-            <h1 style={{ margin: "0 0 4px 0", color: "#667eea", fontSize: "20px", fontWeight: "bold" }}>
-              SHREE ENTERPRISES
-            </h1>
-            <p style={{ margin: "2px 0", color: "#666", fontSize: "10px" }}>
-              Professional Painting & Services
-            </p>
+        {/* Header with Icon, Company Info, and Quotation Details */}
+        <div style={{ display: "grid", gridTemplateColumns: "auto 1fr", gap: "14px", alignItems: "start", marginBottom: "10px", paddingBottom: "8px", borderBottom: "2px solid #667eea" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+            <img src={shreeIcon} alt="logo" style={{ width: "48px", height: "48px", objectFit: "contain" }} />
+            <div>
+              <p style={{ margin: 0, color: "#667eea", fontSize: "20px", fontWeight: "800", letterSpacing: "0.5px" }}>
+                SHREE ENTERPRISES
+              </p>
+              <p style={{ margin: "4px 0 0", color: "#555", fontSize: "12px", lineHeight: "1.3" }}>
+                Professional Painting & Services
+              </p>
+            </div>
+          </div>
+
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(2, minmax(0, 1fr))", gap: "8px" }}>
+            <div style={{ padding: "8px 10px", background: "#f4f6ff", borderRadius: "8px", border: "1px solid #dde4ff" }}>
+              <p style={{ margin: "0 0 4px", color: "#666", fontSize: "8.5px", fontWeight: "700", textTransform: "uppercase", letterSpacing: "0.8px" }}>
+                Quotation #
+              </p>
+              <p style={{ margin: 0, fontSize: "12px", fontWeight: "700", color: "#2f4db4" }}>{quotationNumber}</p>
+            </div>
+            <div style={{ padding: "8px 10px", background: "#f4f6ff", borderRadius: "8px", border: "1px solid #dde4ff" }}>
+              <p style={{ margin: "0 0 4px", color: "#666", fontSize: "8.5px", fontWeight: "700", textTransform: "uppercase", letterSpacing: "0.8px" }}>
+                Date
+              </p>
+              <p style={{ margin: 0, fontSize: "12px", fontWeight: "700", color: "#333" }}>{form.date || new Date().toLocaleDateString()}</p>
+            </div>
           </div>
         </div>
 
-        {/* Company Details Bar */}
-        <div style={{ background: "#f8f9ff", padding: "8px 12px", borderRadius: "6px", marginBottom: "12px", border: "1px solid #e0e0ff" }}>
-          <p style={{ margin: "2px 0", fontSize: "10px", color: "#555" }}>
-            <strong>📍 Address:</strong> Pimple Nilakh, Pune, Maharashtra 411027
-          </p>
-          <p style={{ margin: "2px 0", fontSize: "10px", color: "#555" }}>
-            <strong>📞 Contact:</strong> 7769941729 / 9172211729 | <strong>🌐 Website:</strong> shree-painting.vercel.app
-          </p>
-        </div>
-
-        {/* Quotation & Date Info */}
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px", marginBottom: "12px", padding: "10px", background: "#f0f0f0", borderRadius: "6px" }}>
-          <div>
-            <p style={{ margin: "0 0 2px 0", fontSize: "9px", color: "#666", fontWeight: "bold", textTransform: "uppercase" }}>Quotation #</p>
-            <p style={{ margin: "0", fontSize: "12px", fontWeight: "bold", color: "#667eea" }}>{quotationNumber}</p>
+        {/* Company Contact Summary */}
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(3, minmax(0, 1fr))", gap: "10px", marginBottom: "10px", padding: "10px 10px 12px", background: "#f8f9ff", borderRadius: "8px", border: "1px solid #e4e8ff" }}>
+          <div style={{ fontSize: "11px", color: "#444", lineHeight: "1.4" }}>
+            <span style={{ fontWeight: "800" }}>📍 Address:</span> Pimple Nilakh, Pune, Maharashtra 411027
           </div>
-          <div>
-            <p style={{ margin: "0 0 2px 0", fontSize: "9px", color: "#666", fontWeight: "bold", textTransform: "uppercase" }}>Date</p>
-            <p style={{ margin: "0", fontSize: "12px", fontWeight: "bold", color: "#333" }}>{form.date || new Date().toLocaleDateString()}</p>
+          <div style={{ fontSize: "11px", color: "#444", lineHeight: "1.4" }}>
+            <span style={{ fontWeight: "800" }}>📞 Contact:</span> 7769941729 / 9172211729
+          </div>
+          <div style={{ fontSize: "11px", color: "#444", lineHeight: "1.4" }}>
+            <span style={{ fontWeight: "800" }}>🌐 Website:</span> shree-painting.vercel.app
           </div>
         </div>
 
         {/* Customer Details */}
-        <div style={{ marginBottom: "15px" }}>
-          <h3 style={{ margin: "0 0 8px 0", fontSize: "13px", fontWeight: "bold", color: "#333", borderBottom: "2px solid #667eea", paddingBottom: "4px" }}>
-            📋 CUSTOMER DETAILS
-          </h3>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px" }}>
-            <div style={{ padding: "8px", background: "#f9f9f9", borderRadius: "4px", border: "1px solid #e0e0e0" }}>
-              <p style={{ margin: "0 0 2px 0", fontSize: "9px", color: "#999", fontWeight: "bold", textTransform: "uppercase" }}>Customer Name</p>
-              <p style={{ margin: "0", fontSize: "12px", fontWeight: "600", color: "#333" }}>{form.name || "N/A"}</p>
+        <div style={{ marginBottom: "12px" }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "6px" }}>
+            <h3 style={{ margin: 0, fontSize: "12px", fontWeight: "800", color: "#333", textTransform: "uppercase", letterSpacing: "0.8px" }}>
+              Customer Details
+            </h3>
+          </div>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(2, minmax(0, 1fr))", gap: "10px" }}>
+            <div style={{ padding: "8px", background: "#fff", borderRadius: "8px", border: "1px solid #e0e0e0" }}>
+              <p style={{ margin: "0 0 4px", fontSize: "8.5px", color: "#777", fontWeight: "700", textTransform: "uppercase", letterSpacing: "0.7px" }}>Customer Name</p>
+              <p style={{ margin: 0, fontSize: "12px", fontWeight: "600", color: "#222" }}>{form.name || "N/A"}</p>
             </div>
-            <div style={{ padding: "8px", background: "#f9f9f9", borderRadius: "4px", border: "1px solid #e0e0e0" }}>
-              <p style={{ margin: "0 0 2px 0", fontSize: "9px", color: "#999", fontWeight: "bold", textTransform: "uppercase" }}>Contact</p>
-              <p style={{ margin: "0", fontSize: "12px", fontWeight: "600", color: "#333" }}>{form.contact || "N/A"}</p>
+            <div style={{ padding: "8px", background: "#fff", borderRadius: "8px", border: "1px solid #e0e0e0" }}>
+              <p style={{ margin: "0 0 4px", fontSize: "8.5px", color: "#777", fontWeight: "700", textTransform: "uppercase", letterSpacing: "0.7px" }}>Contact</p>
+              <p style={{ margin: 0, fontSize: "12px", fontWeight: "600", color: "#222" }}>{form.contact || "N/A"}</p>
             </div>
-            <div style={{ padding: "8px", background: "#f9f9f9", borderRadius: "4px", border: "1px solid #e0e0e0", gridColumn: "1 / -1" }}>
-              <p style={{ margin: "0 0 2px 0", fontSize: "9px", color: "#999", fontWeight: "bold", textTransform: "uppercase" }}>Address</p>
-              <p style={{ margin: "0", fontSize: "12px", fontWeight: "600", color: "#333" }}>{form.address || "N/A"}</p>
+            <div style={{ gridColumn: "1 / -1", padding: "8px", background: "#fff", borderRadius: "8px", border: "1px solid #e0e0e0" }}>
+              <p style={{ margin: "0 0 4px", fontSize: "8.5px", color: "#777", fontWeight: "700", textTransform: "uppercase", letterSpacing: "0.7px" }}>Address</p>
+              <p style={{ margin: 0, fontSize: "12px", fontWeight: "600", color: "#222" }}>{form.address || "N/A"}</p>
             </div>
           </div>
         </div>
