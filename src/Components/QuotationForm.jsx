@@ -1,9 +1,9 @@
 export default function QuotationForm({ form, setForm }) {
   const selectedTerms = form.selectedTerms || {
-    timelyDelivery: true,
-    paymentTerms: true,
-    warranty: true,
-    noHiddenCharges: true,
+    timelyDelivery: false,
+    paymentTerms: false,
+    warranty: false,
+    noHiddenCharges: false,
   };
 
   const updateSelectedTerm = (key, value) => {
@@ -59,6 +59,33 @@ export default function QuotationForm({ form, setForm }) {
             type="date"
             value={form.date || ""}
             onChange={(e) => setForm({ ...form, date: e.target.value })}
+            style={{ padding: "10px", border: "1px solid #ddd", borderRadius: "5px", fontSize: "14px", transition: "0.3s" }}
+            onFocus={(e) => e.target.style.borderColor = "#667eea"}
+            onBlur={(e) => e.target.style.borderColor = "#ddd"}
+          />
+        </div>
+        <div style={{ display: "flex", flexDirection: "column" }}>
+          <label style={{ marginBottom: "5px", fontWeight: "600", color: "#555", fontSize: "13px" }}>Customer Discount (%)</label>
+          <input
+            type="number"
+            min="0"
+            max="100"
+            value={form.customerDiscountRate || ""}
+            onChange={(e) => setForm({ ...form, customerDiscountRate: e.target.value })}
+            placeholder="Optional"
+            style={{ padding: "10px", border: "1px solid #ddd", borderRadius: "5px", fontSize: "14px", transition: "0.3s" }}
+            onFocus={(e) => e.target.style.borderColor = "#667eea"}
+            onBlur={(e) => e.target.style.borderColor = "#ddd"}
+          />
+        </div>
+        <div style={{ display: "flex", flexDirection: "column" }}>
+          <label style={{ marginBottom: "5px", fontWeight: "600", color: "#555", fontSize: "13px" }}>Extra Charge (₹)</label>
+          <input
+            type="number"
+            min="0"
+            value={form.extraCharge || ""}
+            onChange={(e) => setForm({ ...form, extraCharge: e.target.value })}
+            placeholder="Optional"
             style={{ padding: "10px", border: "1px solid #ddd", borderRadius: "5px", fontSize: "14px", transition: "0.3s" }}
             onFocus={(e) => e.target.style.borderColor = "#667eea"}
             onBlur={(e) => e.target.style.borderColor = "#ddd"}
