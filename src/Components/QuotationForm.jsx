@@ -102,7 +102,7 @@ export default function QuotationForm({ form, setForm }) {
           <label style={{ display: "flex", alignItems: "center", gap: "10px", fontSize: "14px", color: "#333" }}>
             <input
               type="checkbox"
-              checked={.noHiddenCharges}
+              checked={selectedTerms.noHiddenCharges}
               onChange={(e) => updateSelectedTerm("noHiddenCharges", e.target.checked)}
               style={{ width: "18px", height: "18px" }}
             />
