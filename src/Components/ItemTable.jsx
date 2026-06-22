@@ -2,12 +2,15 @@ export default function ItemTable({ items, setItems }) {
   const handleChange = (i, e) => {
     const updated = [...items];
     updated[i][e.target.name] = e.target.value;
-    updated[i].amount = updated[i].qty * updated[i].rate;
+    updated[i].amount = Number(updated[i].qty || 0) * Number(updated[i].rate || 0);
     setItems(updated);
   };
 
   const addRow = () => {
-    setItems([...items, { description: "", qty: 0, rate: 0, amount: 0 }]);
+    setItems([
+      ...items,
+      { description: "", qty: 0, rate: 0, amount: 0, discountRate: 0 },
+    ]);
   };
 
   const removeRow = (i) => {
@@ -26,6 +29,7 @@ export default function ItemTable({ items, setItems }) {
               <th style={{ padding: "12px", textAlign: "left", fontWeight: "600" }}>Description</th>
               <th style={{ padding: "12px", textAlign: "center", fontWeight: "600" }}>Quantity</th>
               <th style={{ padding: "12px", textAlign: "right", fontWeight: "600" }}>Rate (₹)</th>
+              <th style={{ padding: "12px", textAlign: "center", fontWeight: "600" }}>Discount (%)</th>
               <th style={{ padding: "12px", textAlign: "right", fontWeight: "600" }}>Amount (₹)</th>
               <th style={{ padding: "12px", textAlign: "center", fontWeight: "600" }}>Action</th>
             </tr>
@@ -66,6 +70,20 @@ export default function ItemTable({ items, setItems }) {
                     placeholder="0"
                     min="0"
                     style={{ width: "100px", padding: "8px", border: "1px solid #ddd", borderRadius: "4px", fontSize: "13px", textAlign: "right", transition: "0.3s" }}
+                    onFocus={(e) => e.target.style.borderColor = "#667eea"}
+                    onBlur={(e) => e.target.style.borderColor = "#ddd"}
+                  />
+                </td>
+                <td style={{ padding: "12px", textAlign: "center" }}>
+                  <input
+                    name="discountRate"
+                    type="number"
+                    value={item.discountRate || ""}
+                    onChange={(e) => handleChange(i, e)}
+                    placeholder="0"
+                    min="0"
+                    max="100"
+                    style={{ width: "80px", padding: "8px", border: "1px solid #ddd", borderRadius: "4px", fontSize: "13px", textAlign: "center", transition: "0.3s" }}
                     onFocus={(e) => e.target.style.borderColor = "#667eea"}
                     onBlur={(e) => e.target.style.borderColor = "#ddd"}
                   />

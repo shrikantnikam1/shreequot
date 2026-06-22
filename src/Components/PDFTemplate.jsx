@@ -1,18 +1,36 @@
-import React, { forwardRef, useEffect, useState } from "react";
+import React, { forwardRef, useState } from "react";
 import shreeIcon from "../icon/shree-black.png";
 
-const PDFTemplate = forwardRef(({ form, items, total }, ref) => {
-  const [quotationNumber, setQuotationNumber] = useState("");
-
-  useEffect(() => {
-    setQuotationNumber(
+const PDFTemplate = forwardRef(
+  (
+    { form, items, total, subtotal = 0, itemDiscountTotal = 0, customerDiscountTotal = 0, extraCharge = 0, finalTotal },
+    ref
+  ) => {
+    const [quotationNumber] = useState(() =>
       `QT-${new Date().getFullYear()}-${Math.floor(Math.random() * 10000)
         .toString()
         .padStart(5, "0")}`
     );
-  }, []);
-  
-  return (
+
+    const formatCurrency = (value) =>
+      new Intl.NumberFormat("en-IN", {
+        style: "currency",
+        currency: "INR",
+        maximumFractionDigits: 2,
+      }).format(Number(value) || 0);
+
+    const safeSubtotal = Number(subtotal) || 0;
+    const safeItemDiscountTotal = Number(itemDiscountTotal) || 0;
+    const safeCustomerDiscountTotal = Number(customerDiscountTotal) || 0;
+    const safeExtraCharge = Number(extraCharge) || 0;
+    const safeFinalTotal = Number.isFinite(Number(finalTotal))
+      ? Number(finalTotal)
+      : Number(total) || 0;
+
+    const hasItemDiscount = items.some((item) => Number(item.discountRate || 0) > 0);
+    const hasExtraCharge = safeExtraCharge > 0;
+
+    return (
     <div ref={ref} style={{ padding: "30px", background: "#fff", maxWidth: "850px", margin: "0 auto", fontSize: "13px", position: "relative", overflow: "hidden", fontFamily: "Arial, sans-serif", minHeight: "100%" }}>
       {/* Background Watermark Icon - Full Page Coverage */}
       <div style={{ position: "absolute", top: "0", left: "0", right: "0", bottom: "0", display: "flex", alignItems: "center", justifyContent: "center", opacity: 0.17, zIndex: 0, pointerEvents: "none", width: "100%", height: "100%" }}>
@@ -82,16 +100,19 @@ const PDFTemplate = forwardRef(({ form, items, total }, ref) => {
         {/* Services Table */}
         <div style={{ marginBottom: "15px" }}>
           <h3 style={{ margin: "0 0 10px 0", fontSize: "14px", fontWeight: "bold", color: "#333", borderBottom: "2px solid #667eea", paddingBottom: "5px" }}>
-            🎨 PAINTING SERVICES & MATERIALS
+            🎨SERVICES & MATERIALS
           </h3>
-          <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "12px" }}>
+          <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "11px" }}>
             <thead>
               <tr style={{ background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)", color: "white" }}>
                 <th style={{ padding: "10px", textAlign: "center", fontWeight: "bold", border: "1px solid #ddd" }}>Sr</th>
                 <th style={{ padding: "10px", textAlign: "left", fontWeight: "bold", border: "1px solid #ddd" }}>Service/Material</th>
                 <th style={{ padding: "10px", textAlign: "center", fontWeight: "bold", border: "1px solid #ddd" }}>Unit/Qty</th>
-                <th style={{ padding: "10px", textAlign: "right", fontWeight: "bold", border: "1px solid #ddd" }}>Rate (₹)</th>
-                <th style={{ padding: "10px", textAlign: "right", fontWeight: "bold", border: "1px solid #ddd" }}>Amount (₹)</th>
+                <th style={{ padding: "10px", textAlign: "right", fontWeight: "bold", border: "1px solid #ddd" }}>Rate</th>
+                {hasItemDiscount && (
+                  <th style={{ padding: "10px", textAlign: "center", fontWeight: "bold", border: "1px solid #ddd" }}>Discount</th>
+                )}
+                <th style={{ padding: "10px", textAlign: "right", fontWeight: "bold", border: "1px solid #ddd" }}>Amount</th>
               </tr>
             </thead>
             <tbody>
@@ -100,8 +121,13 @@ const PDFTemplate = forwardRef(({ form, items, total }, ref) => {
                   <td style={{ padding: "10px", textAlign: "center", border: "1px solid #ddd", fontWeight: "600" }}>{i + 1}</td>
                   <td style={{ padding: "10px", textAlign: "left", border: "1px solid #ddd", color: "#333" }}>{item.description || "-"}</td>
                   <td style={{ padding: "10px", textAlign: "center", border: "1px solid #ddd", fontWeight: "600" }}>{item.qty || 0}</td>
-                  <td style={{ padding: "10px", textAlign: "right", border: "1px solid #ddd", fontWeight: "600" }}>₹ {Number(item.rate || 0).toFixed(2)}</td>
-                  <td style={{ padding: "10px", textAlign: "right", border: "1px solid #ddd", fontWeight: "bold", color: "#667eea" }}>₹ {Number(item.amount || 0).toFixed(2)}</td>
+                  <td style={{ padding: "10px", textAlign: "right", border: "1px solid #ddd", fontWeight: "600" }}>{formatCurrency(item.rate)}</td>
+                  {hasItemDiscount && (
+                    <td style={{ padding: "10px", textAlign: "center", border: "1px solid #ddd", fontWeight: "600" }}>
+                      {Number(item.discountRate || 0).toFixed(0)}%
+                    </td>
+                  )}
+                  <td style={{ padding: "10px", textAlign: "right", border: "1px solid #ddd", fontWeight: "bold", color: "#667eea" }}>{formatCurrency(item.amount)}</td>
                 </tr>
               ))}
             </tbody>
@@ -110,17 +136,47 @@ const PDFTemplate = forwardRef(({ form, items, total }, ref) => {
 
         {/* Total Summary */}
         <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: "20px", marginTop: "15px" }}>
-          <div style={{ width: "300px", padding: "15px", background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)", borderRadius: "6px", color: "white" }}>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-              <span style={{ fontSize: "14px", fontWeight: "bold", textTransform: "uppercase" }}>Total Amount</span>
-              <span style={{ fontSize: "22px", fontWeight: "bold" }}>₹ {Number(total).toFixed(2)}</span>
+          <div style={{ width: "300px", padding: "15px", background: "linear-gradient(135deg, #646e9c 0%, #764ba2 100%)", borderRadius: "6px", color: "white" }}>
+            <div style={{ display: "grid", gap: "10px" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                <span style={{ fontSize: "12px", fontWeight: "600", textTransform: "uppercase" }}>Total Amount</span>
+                <span style={{ fontSize: "14px", fontWeight: "600" }}>{formatCurrency(total)}</span>
+              </div>
+              {safeItemDiscountTotal > 0 && (
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                  <span style={{ fontSize: "12px", fontWeight: "600", textTransform: "uppercase" }}>Item Discount</span>
+                  <span style={{ fontSize: "14px", fontWeight: "600" }}>- {formatCurrency(safeItemDiscountTotal)}</span>
+                </div>
+              )}
+              {safeItemDiscountTotal > 0 && (
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                  <span style={{ fontSize: "12px", fontWeight: "600", textTransform: "uppercase" }}>Subtotal</span>
+                  <span style={{ fontSize: "14px", fontWeight: "600" }}>{formatCurrency(safeSubtotal)}</span>
+                </div>
+              )}
+              {safeCustomerDiscountTotal > 0 && (
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                  <span style={{ fontSize: "12px", fontWeight: "600", textTransform: "uppercase" }}>Customer Discount</span>
+                  <span style={{ fontSize: "14px", fontWeight: "600" }}>- {formatCurrency(safeCustomerDiscountTotal)}</span>
+                </div>
+              )}
+              {hasExtraCharge && (
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                  <span style={{ fontSize: "12px", fontWeight: "600", textTransform: "uppercase" }}>Extra Charge</span>
+                  <span style={{ fontSize: "14px", fontWeight: "600" }}>+ {formatCurrency(safeExtraCharge)}</span>
+                </div>
+              )}
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderTop: "1px solid rgba(255,255,255,0.35)", paddingTop: "10px" }}>
+                <span style={{ fontSize: "14px", fontWeight: "bold", textTransform: "uppercase" }}>Final Total</span>
+                <span style={{ fontSize: "24px", fontWeight: "bold" }}>{formatCurrency(safeFinalTotal)}</span>
+              </div>
             </div>
           </div>
         </div>
 
         {/* Terms & Conditions */}
         <div style={{ marginTop: "20px", paddingTop: "15px", paddingBottom: "15px", borderTop: "2px solid #ddd", borderBottom: "2px solid #ddd" }}>
-          <h3 style={{ margin: "0 0 10px 0", fontSize: "12px", fontWeight: "bold", color: "#333", textTransform: "uppercase" }}>
+          <h3 style={{ margin: "0 0 10px 0", fontSize: "12px", fontWeight: "bold", color: "#333333", textTransform: "uppercase" }}>
             📋 Terms & Conditions
           </h3>
           <ol style={{ margin: "8px 0", paddingLeft: "20px", fontSize: "10px", color: "#555", lineHeight: "1.5" }}>
